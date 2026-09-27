@@ -1,0 +1,2 @@
+NOTION_TOKEN=ntn_xxxxxxxxxxxxxxxx
+HOOK_SECRET=generate_with_secrets.token_hex(32)
