@@ -19,14 +19,14 @@ export async function syncWidgetEmbed(
 ): Promise<SyncResult> {
   const page = await notion.getPage(pageId);
 
-  const template = getFormulaString(page, WIDGET_URL_PROPERTY);
-  if (!template) {
-    return { status: "skipped", reason: `empty "${WIDGET_URL_PROPERTY}"` };
-  }
-
   const deadline = getDateStart(page, DEADLINE_PROPERTY);
   if (!deadline) {
     return { status: "skipped", reason: `empty "${DEADLINE_PROPERTY}"` };
+  }
+
+  const template = getFormulaString(page, WIDGET_URL_PROPERTY);
+  if (!template) {
+    return { status: "skipped", reason: `empty "${WIDGET_URL_PROPERTY}"` };
   }
 
   const url = withDeadline(template, toWallClock(deadline));
