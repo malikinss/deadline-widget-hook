@@ -4,7 +4,8 @@ import { WIDGET_DEADLINE_PARAM, WIDGET_HOST } from "../config";
 
 export function isWidgetUrl(url: string): boolean {
   try {
-    return new URL(url).hostname === WIDGET_HOST;
+    const parsed = new URL(url);
+    return parsed.protocol === "https:" && parsed.hostname === WIDGET_HOST;
   } catch {
     return false;
   }

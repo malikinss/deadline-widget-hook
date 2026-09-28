@@ -4,6 +4,10 @@ import { describe, expect, it } from "vitest";
 import { isWidgetUrl, withDeadline } from "../src/widget/widget";
 
 describe("isWidgetUrl", () => {
+  it("rejects plain http", () => {
+    expect(isWidgetUrl("http://mindfulwidgets.com/embed/x")).toBe(false);
+  });
+
   it("accepts widget host", () => {
     expect(isWidgetUrl("https://mindfulwidgets.com/embed/x")).toBe(true);
   });

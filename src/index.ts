@@ -1,3 +1,5 @@
+// ./src/index.ts
+
 import type { Env } from "./env";
 import { HttpError, json } from "./http";
 import { createNotionClient } from "./notion/client";
@@ -6,9 +8,19 @@ import { isAuthorized } from "./webhook/auth";
 import { parsePageId } from "./webhook/payload";
 import { syncWidgetEmbed } from "./widget/sync";
 
+import { EMBED_PATH } from "./config";
+import { handleEmbed } from "./embed/handler";
+
 export default {
   async fetch(req, env): Promise<Response> {
+    
+    const { pathname } = new URL(req.url);
+    if (req.method === "GET" && pathname === EMBED_PATH) {
+      return handleEmbed(req, env);
+    }
+
     if (req.method !== "POST") return new Response("ok");
+  
     if (!isAuthorized(req, env.HOOK_SECRET)) {
       return json({ error: "forbidden" }, 403);
     }
