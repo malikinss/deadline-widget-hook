@@ -1,3 +1,5 @@
+// ./src/notion/client.ts
+
 import { NOTION_API_BASE, NOTION_VERSION } from "../config";
 import { NotionApiError } from "./errors";
 import type { NotionBlock, NotionList, NotionPage } from "./types";
@@ -6,7 +8,6 @@ export interface NotionClient {
   getPage(pageId: string): Promise<NotionPage>;
   listChildren(blockId: string): Promise<NotionBlock[]>;
   updateEmbedUrl(blockId: string, url: string): Promise<void>;
-  appendEmbed(parentId: string, url: string): Promise<void>;
 }
 
 export function createNotionClient(token: string): NotionClient {
@@ -61,13 +62,6 @@ export function createNotionClient(token: string): NotionClient {
       await request(`/blocks/${blockId}`, {
         method: "PATCH",
         body: JSON.stringify({ embed: { url } }),
-      });
-    },
-
-    async appendEmbed(parentId, url) {
-      await request(`/blocks/${parentId}/children`, {
-        method: "PATCH",
-        body: JSON.stringify({ children: [{ type: "embed", embed: { url } }] }),
       });
     },
   };
