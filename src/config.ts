@@ -27,6 +27,7 @@ export const EMBED_SRC_PARAM = "src";
 export const WORKER_ORIGIN = "https://deadline-widget-hook.arme-malikinss.workers.dev";
 
 export const DONE_PATH = "/done";
+export const PENDING_PATH = "/pending";
 
 // Databases the worker is allowed to modify.
 // Keys are database IDs without dashes, as they appear in Notion links.

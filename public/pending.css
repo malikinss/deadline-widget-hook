@@ -1,0 +1,11 @@
+:root {
+  --accent: #b7791f;
+  --accent-soft: rgba(203, 145, 47, 0.18);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --accent: #e0a843;
+    --accent-soft: rgba(224, 168, 67, 0.18);
+  }
+}

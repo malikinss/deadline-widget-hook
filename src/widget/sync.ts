@@ -1,14 +1,24 @@
-// ./src/widget/sync.ts
-
+import type { DatabaseConfig } from "../config";
 import { findEmbed } from "../notion/blocks";
 import type { NotionClient } from "../notion/client";
+import type { NotionPage } from "../notion/types";
 import { findDatabaseConfig, isCompleted, readDeadline } from "./rules";
-import { buildWidgetUrl, doneUrl, isManagedEmbedUrl, toEmbedUrl } from "./widget";
+import { buildWidgetUrl, doneUrl, isManagedEmbedUrl, pendingUrl, toEmbedUrl } from "./widget";
 
 export type SyncResult =
   | { status: "updated"; blockId: string }
   | { status: "unchanged"; blockId: string }
   | { status: "skipped"; reason: string };
+
+/**
+ * Decides which URL the widget embed should show for the page's current state.
+ */
+function targetUrl(page: NotionPage, db: DatabaseConfig): string {
+  if (isCompleted(page, db)) return doneUrl();
+
+  const deadline = readDeadline(page, db);
+  return deadline ? toEmbedUrl(buildWidgetUrl(deadline)) : pendingUrl();
+}
 
 export async function syncWidgetEmbed(
   notion: NotionClient,
@@ -21,25 +31,12 @@ export async function syncWidgetEmbed(
     return { status: "skipped", reason: "database is not configured" };
   }
 
-  const completed = isCompleted(page, db);
-
-  let target: string;
-  if (completed) {
-    target = doneUrl();
-  } else {
-    const deadline = readDeadline(page, db);
-    if (!deadline) {
-      return { status: "skipped", reason: `empty "${db.deadlineProperty}"` };
-    }
-    target = toEmbedUrl(buildWidgetUrl(deadline));
-  }
-
   const embed = findEmbed(await notion.listChildren(pageId), isManagedEmbedUrl);
-
   if (!embed) {
     return { status: "skipped", reason: "no widget on page" };
   }
 
+  const target = targetUrl(page, db);
   if (embed.embed.url === target) {
     return { status: "unchanged", blockId: embed.id };
   }

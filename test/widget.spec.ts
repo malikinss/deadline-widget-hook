@@ -9,6 +9,7 @@ import {
   isManagedEmbedUrl,
   isWidgetUrl,
   toEmbedUrl,
+  pendingUrl
 } from "../src/widget/widget";
 
 describe("isWidgetUrl", () => {
@@ -54,6 +55,10 @@ describe("isEmbedWrapperUrl", () => {
 });
 
 describe("isManagedEmbedUrl", () => {
+  it("accepts the pending badge", () => {
+    expect(isManagedEmbedUrl(`${WORKER}/pending`)).toBe(true);
+  });
+
   it("accepts the done badge", () => {
     expect(isManagedEmbedUrl(`${WORKER}/done`)).toBe(true);
   });
@@ -90,5 +95,11 @@ describe("isDonePageUrl", () => {
 
   it("rejects the wrapper page", () => {
     expect(isDonePageUrl(`${WORKER}/embed?src=x`)).toBe(false);
+  });
+});
+
+describe("pendingUrl", () => {
+  it("points to the no-deadline badge page on the worker", () => {
+    expect(pendingUrl()).toBe(`${WORKER}/pending`);
   });
 });

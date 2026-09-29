@@ -9,6 +9,7 @@ import {
   WIDGET_HOST,
   WIDGET_PARAMS,
   WORKER_ORIGIN,
+  PENDING_PATH
 } from "../config";
 
 /**
@@ -79,9 +80,25 @@ export function isDonePageUrl(url: string): boolean {
 }
 
 /**
- * Checks whether an embed is managed by the sync:
- * a legacy direct widget URL, a wrapper URL or the "Completed" badge.
+ * Returns the URL of the "No deadline" badge page.
+ */
+export function pendingUrl(): string {
+  return new URL(PENDING_PATH, WORKER_ORIGIN).toString();
+}
+
+/**
+ * Checks whether a URL points to our "No deadline" badge page.
+ */
+export function isPendingPageUrl(url: string): boolean {
+  return isWorkerPageUrl(url, PENDING_PATH);
+}
+
+/**
+ * Checks whether an embed is managed by the sync: a legacy direct widget URL,
+ * a wrapper URL or one of the badge pages.
  */
 export function isManagedEmbedUrl(url: string): boolean {
-  return isWidgetUrl(url) || isEmbedWrapperUrl(url) || isDonePageUrl(url);
+  return (
+    isWidgetUrl(url) || isEmbedWrapperUrl(url) || isDonePageUrl(url) || isPendingPageUrl(url)
+  );
 }

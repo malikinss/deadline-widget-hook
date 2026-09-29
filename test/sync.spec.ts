@@ -17,7 +17,9 @@ const EXPECTED =
   `${WORKER}/embed?src=https%3A%2F%2Fmindfulwidgets.com%2Fembed%2Fnotion%2Fcountdown%2Fv1` +
   "%3Fcolor%3Dgray%26ink%3D24a9e1%26font%3Dsans%26style%3Dflip%26label%3DDeadline" +
   "%26to%3D2026-10-02T09%253A00";
+
 const DONE = `${WORKER}/done`;
+const PENDING = `${WORKER}/pending`;
 
 // Embeds that may already exist on a page.
 const LEGACY_DIRECT =
@@ -76,14 +78,6 @@ describe("syncWidgetEmbed", () => {
       expect(notion.listChildren).not.toHaveBeenCalled();
     });
 
-    it("active pages without a deadline", async () => {
-      const notion = fakeNotion({ deadline: null });
-      const result = await syncWidgetEmbed(notion, "p1");
-
-      expect(result.status).toBe("skipped");
-      expect(notion.listChildren).not.toHaveBeenCalled();
-    });
-
     it("active pages without a widget", async () => {
       const notion = fakeNotion();
       const result = await syncWidgetEmbed(notion, "p1");
@@ -102,6 +96,22 @@ describe("syncWidgetEmbed", () => {
   });
 
   describe("active pages", () => {
+    it("show the pending badge when there is no deadline", async () => {
+      const notion = fakeNotion({ deadline: null, blocks: [embedBlock(EXPECTED)] });
+      const result = await syncWidgetEmbed(notion, "p1");
+
+      expect(result).toEqual({ status: "updated", blockId: "b1" });
+      expect(notion.updateEmbedUrl).toHaveBeenCalledWith("b1", PENDING);
+    });
+
+    it("replace the done badge after being reopened without a deadline", async () => {
+      const notion = fakeNotion({ deadline: null, blocks: [embedBlock(DONE)] });
+      const result = await syncWidgetEmbed(notion, "p1");
+
+      expect(result).toEqual({ status: "updated", blockId: "b1" });
+      expect(notion.updateEmbedUrl).toHaveBeenCalledWith("b1", PENDING);
+    });
+
     it("leave the embed alone when the url is the same", async () => {
       const notion = fakeNotion({ blocks: [embedBlock(EXPECTED)] });
       const result = await syncWidgetEmbed(notion, "p1");
