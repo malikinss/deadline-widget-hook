@@ -59,7 +59,6 @@ function fakeNotion({
     })),
     listChildren: vi.fn(async () => blocks),
     updateEmbedUrl: vi.fn(async () => {}),
-    appendEmbed: vi.fn(async () => {}),
   } satisfies NotionClient;
 }
 
@@ -85,24 +84,24 @@ describe("syncWidgetEmbed", () => {
       expect(notion.listChildren).not.toHaveBeenCalled();
     });
 
+    it("active pages without a widget", async () => {
+      const notion = fakeNotion();
+      const result = await syncWidgetEmbed(notion, "p1");
+
+      expect(result).toEqual({ status: "skipped", reason: "no widget on page" });
+      expect(notion.updateEmbedUrl).not.toHaveBeenCalled();
+    });
+
     it("completed pages without a widget", async () => {
       const notion = fakeNotion({ status: COMPLETED });
       const result = await syncWidgetEmbed(notion, "p1");
 
-      expect(result).toEqual({ status: "skipped", reason: "completed without widget" });
-      expect(notion.appendEmbed).not.toHaveBeenCalled();
+      expect(result).toEqual({ status: "skipped", reason: "no widget on page" });
+      expect(notion.updateEmbedUrl).not.toHaveBeenCalled();
     });
   });
 
   describe("active pages", () => {
-    it("create a wrapped embed when there is none", async () => {
-      const notion = fakeNotion();
-      const result = await syncWidgetEmbed(notion, "p1");
-
-      expect(result).toEqual({ status: "created" });
-      expect(notion.appendEmbed).toHaveBeenCalledWith("p1", EXPECTED);
-    });
-
     it("leave the embed alone when the url is the same", async () => {
       const notion = fakeNotion({ blocks: [embedBlock(EXPECTED)] });
       const result = await syncWidgetEmbed(notion, "p1");
@@ -124,7 +123,6 @@ describe("syncWidgetEmbed", () => {
       const result = await syncWidgetEmbed(notion, "p1");
 
       expect(result).toEqual({ status: "updated", blockId: "b1" });
-      expect(notion.appendEmbed).not.toHaveBeenCalled();
     });
 
     it("restore the countdown after being reopened", async () => {

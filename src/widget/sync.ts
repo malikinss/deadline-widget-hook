@@ -6,7 +6,6 @@ import { findDatabaseConfig, isCompleted, readDeadline } from "./rules";
 import { buildWidgetUrl, doneUrl, isManagedEmbedUrl, toEmbedUrl } from "./widget";
 
 export type SyncResult =
-  | { status: "created" }
   | { status: "updated"; blockId: string }
   | { status: "unchanged"; blockId: string }
   | { status: "skipped"; reason: string };
@@ -38,11 +37,7 @@ export async function syncWidgetEmbed(
   const embed = findEmbed(await notion.listChildren(pageId), isManagedEmbedUrl);
 
   if (!embed) {
-    if (completed) {
-      return { status: "skipped", reason: "completed without widget" };
-    }
-    await notion.appendEmbed(pageId, target);
-    return { status: "created" };
+    return { status: "skipped", reason: "no widget on page" };
   }
 
   if (embed.embed.url === target) {
