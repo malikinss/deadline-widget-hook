@@ -5,7 +5,7 @@ import { toWallClock } from "../lib/datetime";
 import { findEmbed } from "../notion/blocks";
 import type { NotionClient } from "../notion/client";
 import { getDateStart, getFormulaString } from "../notion/properties";
-import { isWidgetUrl, withDeadline } from "./widget";
+import { isManagedEmbedUrl, toEmbedUrl, withDeadline } from "./widget";
 
 export type SyncResult =
   | { status: "created" }
@@ -29,8 +29,8 @@ export async function syncWidgetEmbed(
     return { status: "skipped", reason: `empty "${WIDGET_URL_PROPERTY}"` };
   }
 
-  const url = withDeadline(template, toWallClock(deadline));
-  const embed = findEmbed(await notion.listChildren(pageId), isWidgetUrl);
+  const url = toEmbedUrl(withDeadline(template, toWallClock(deadline)));
+  const embed = findEmbed(await notion.listChildren(pageId), isManagedEmbedUrl);
 
   if (!embed) {
     await notion.appendEmbed(pageId, url);

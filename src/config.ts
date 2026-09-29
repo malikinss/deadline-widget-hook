@@ -16,3 +16,4 @@ export const WIDGET_DEADLINE_PARAM = "to";
 // Embed wrapper page
 export const EMBED_PATH = "/embed";
 export const EMBED_SRC_PARAM = "src";
+export const WORKER_ORIGIN = "https://deadline-widget-hook.arme-malikinss.workers.dev";
