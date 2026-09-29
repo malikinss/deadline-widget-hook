@@ -9,7 +9,9 @@ import {
   WIDGET_HOST,
   WIDGET_PARAMS,
   WORKER_ORIGIN,
-  PENDING_PATH
+  PENDING_PATH,
+  COUNTDOWN_DEADLINE_PARAM,
+  COUNTDOWN_PATH
 } from "../config";
 
 /**
@@ -94,11 +96,32 @@ export function isPendingPageUrl(url: string): boolean {
 }
 
 /**
+ * Builds the URL of our countdown widget page.
+ * @param wallClock - Deadline in `YYYY-MM-DDTHH:mm` format.
+ */
+export function countdownUrl(wallClock: string): string {
+  const url = new URL(COUNTDOWN_PATH, WORKER_ORIGIN);
+  url.searchParams.set(COUNTDOWN_DEADLINE_PARAM, wallClock);
+  return url.toString();
+}
+
+/**
+ * Checks whether a URL points to our countdown widget page.
+ */
+export function isCountdownPageUrl(url: string): boolean {
+  return isWorkerPageUrl(url, COUNTDOWN_PATH);
+}
+
+/**
  * Checks whether an embed is managed by the sync: a legacy direct widget URL,
  * a wrapper URL or one of the badge pages.
  */
 export function isManagedEmbedUrl(url: string): boolean {
   return (
-    isWidgetUrl(url) || isEmbedWrapperUrl(url) || isDonePageUrl(url) || isPendingPageUrl(url)
+    isWidgetUrl(url) ||
+    isEmbedWrapperUrl(url) ||
+    isCountdownPageUrl(url) ||
+    isDonePageUrl(url) ||
+    isPendingPageUrl(url)
   );
 }

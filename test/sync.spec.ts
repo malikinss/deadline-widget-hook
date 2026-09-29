@@ -13,18 +13,20 @@ const COMPLETED = "הושלם - Completed";
 const DEADLINE = "2026-10-02T09:00:00.000+03:00";
 
 // What the worker should write for an active task: the widget URL built from config, wrapped.
-const EXPECTED =
-  `${WORKER}/embed?src=https%3A%2F%2Fmindfulwidgets.com%2Fembed%2Fnotion%2Fcountdown%2Fv1` +
-  "%3Fcolor%3Dgray%26ink%3D24a9e1%26font%3Dsans%26style%3Dflip%26label%3DDeadline" +
-  "%26to%3D2026-10-02T09%253A00";
-
+// What the worker should write for an active task: our countdown page with the deadline.
+const EXPECTED = `${WORKER}/countdown?to=2026-10-02T09%3A00`;
 const DONE = `${WORKER}/done`;
 const PENDING = `${WORKER}/pending`;
 
 // Embeds that may already exist on a page.
+const OLD_COUNTDOWN = `${WORKER}/countdown?to=2026-09-01T12%3A00`;
 const LEGACY_DIRECT =
   "https://mindfulwidgets.com/embed/notion/countdown/v1" +
   "?color=gray&ink=24a9e1&font=sans&style=flip&label=Deadline&to=2026-09-01T12%3A00&theme=light";
+const LEGACY_WRAPPED =
+  `${WORKER}/embed?src=https%3A%2F%2Fmindfulwidgets.com%2Fembed%2Fnotion%2Fcountdown%2Fv1` +
+  "%3Fcolor%3Dgray%26ink%3D24a9e1%26font%3Dsans%26style%3Dflip%26label%3DDeadline" +
+  "%26to%3D2026-09-01T12%253A00";
 const OLD_WRAPPED =
   `${WORKER}/embed?src=https%3A%2F%2Fmindfulwidgets.com%2Fembed%2Fnotion%2Fcountdown%2Fv1` +
   "%3Fcolor%3Dgray%26ink%3D24a9e1%26font%3Dsans%26style%3Dflip%26label%3DDeadline" +
@@ -120,11 +122,20 @@ describe("syncWidgetEmbed", () => {
       expect(notion.updateEmbedUrl).not.toHaveBeenCalled();
     });
 
-    it("update a wrapped embed when the deadline changed", async () => {
-      const notion = fakeNotion({ blocks: [embedBlock(OLD_WRAPPED)] });
+    it("update the countdown when the deadline changed", async () => {
+      const notion = fakeNotion({ blocks: [embedBlock(OLD_COUNTDOWN)] });
       const result = await syncWidgetEmbed(notion, "p1");
 
       expect(result).toEqual({ status: "updated", blockId: "b1" });
+      expect(notion.updateEmbedUrl).toHaveBeenCalledWith("b1", EXPECTED);
+    });
+
+    it("convert a legacy wrapped embed", async () => {
+      const notion = fakeNotion({ blocks: [embedBlock(LEGACY_WRAPPED)] });
+      const result = await syncWidgetEmbed(notion, "p1");
+
+      expect(result).toEqual({ status: "updated", blockId: "b1" });
+      expect(notion.updateEmbedUrl).toHaveBeenCalledWith("b1", EXPECTED);
       expect(notion.updateEmbedUrl).toHaveBeenCalledWith("b1", EXPECTED);
     });
 

@@ -9,7 +9,8 @@ import {
   isManagedEmbedUrl,
   isWidgetUrl,
   toEmbedUrl,
-  pendingUrl
+  pendingUrl,
+  countdownUrl
 } from "../src/widget/widget";
 
 describe("isWidgetUrl", () => {
@@ -71,6 +72,10 @@ describe("isManagedEmbedUrl", () => {
   it("rejects unrelated embeds", () => {
     expect(isManagedEmbedUrl("https://youtube.com/watch?v=1")).toBe(false);
   });
+
+  it("accepts the countdown page", () => {
+    expect(isManagedEmbedUrl(`${WORKER}/countdown?to=2026-10-02T09%3A00`)).toBe(true);
+  });
 });
 
 describe("buildWidgetUrl", () => {
@@ -101,5 +106,11 @@ describe("isDonePageUrl", () => {
 describe("pendingUrl", () => {
   it("points to the no-deadline badge page on the worker", () => {
     expect(pendingUrl()).toBe(`${WORKER}/pending`);
+  });
+});
+
+describe("countdownUrl", () => {
+  it("puts the deadline into the to param", () => {
+    expect(countdownUrl("2026-10-02T09:00")).toBe(`${WORKER}/countdown?to=2026-10-02T09%3A00`);
   });
 });

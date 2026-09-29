@@ -3,7 +3,7 @@ import { findEmbed } from "../notion/blocks";
 import type { NotionClient } from "../notion/client";
 import type { NotionPage } from "../notion/types";
 import { findDatabaseConfig, isCompleted, readDeadline } from "./rules";
-import { buildWidgetUrl, doneUrl, isManagedEmbedUrl, pendingUrl, toEmbedUrl } from "./widget";
+import { countdownUrl, doneUrl, isManagedEmbedUrl, pendingUrl } from "./widget";
 
 export type SyncResult =
   | { status: "updated"; blockId: string }
@@ -17,7 +17,7 @@ function targetUrl(page: NotionPage, db: DatabaseConfig): string {
   if (isCompleted(page, db)) return doneUrl();
 
   const deadline = readDeadline(page, db);
-  return deadline ? toEmbedUrl(buildWidgetUrl(deadline)) : pendingUrl();
+  return deadline ? countdownUrl(deadline) : pendingUrl();
 }
 
 export async function syncWidgetEmbed(

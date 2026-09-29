@@ -29,6 +29,9 @@ export const WORKER_ORIGIN = "https://deadline-widget-hook.arme-malikinss.worker
 export const DONE_PATH = "/done";
 export const PENDING_PATH = "/pending";
 
+export const COUNTDOWN_PATH = "/countdown";
+export const COUNTDOWN_DEADLINE_PARAM = "to";
+
 // Databases the worker is allowed to modify.
 // Keys are database IDs without dashes, as they appear in Notion links.
 
