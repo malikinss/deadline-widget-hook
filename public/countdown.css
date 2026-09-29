@@ -1,0 +1,154 @@
+:root {
+  --accent: #24a9e1;
+}
+
+.countdown {
+  gap: 4vmin;
+}
+
+.countdown__label {
+  color: var(--accent);
+  font-size: 8vmin;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.countdown__label-text {
+  margin-right: -0.08em;
+}
+
+.countdown__tiles {
+  display: flex;
+  gap: min(2.5vw, 3vmin);
+}
+
+.countdown__unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2vmin;
+}
+
+.tile {
+  position: relative;
+  width: min(19vw, 28vmin);
+  height: min(16vw, 24vmin);
+  perspective: 60vmin;
+  color: var(--accent);
+  font-size: min(11vw, 17vmin);
+  font-weight: 800;
+}
+
+/* Hinge line across the middle of the tile */
+.tile::after {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: var(--card-bg);
+  opacity: 0.7;
+}
+
+.tile__half {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50%;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--accent) 14%, var(--card-bg));
+}
+
+.tile__half--top {
+  top: 0;
+  border-radius: 8px 8px 0 0;
+}
+
+.tile__half--bottom {
+  bottom: 0;
+  border-radius: 0 0 8px 8px;
+}
+
+.tile__value {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 200%;
+  display: grid;
+  place-items: center;
+  line-height: 1;
+}
+
+.tile__half--top .tile__value {
+  top: 0;
+}
+
+.tile__half--bottom .tile__value {
+  bottom: 0;
+}
+
+.tile__flap {
+  z-index: 2;
+  visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.tile__flap--top {
+  transform-origin: bottom;
+}
+
+.tile__flap--bottom {
+  transform-origin: top;
+  transform: rotateX(90deg);
+}
+
+.tile.is-flipping .tile__flap {
+  visibility: visible;
+}
+
+.tile.is-flipping .tile__flap--top {
+  animation: flip-top 300ms ease-in forwards;
+}
+
+.tile.is-flipping .tile__flap--bottom {
+  animation: flip-bottom 300ms ease-out 300ms forwards;
+}
+
+@keyframes flip-top {
+  from {
+    transform: rotateX(0deg);
+  }
+  to {
+    transform: rotateX(-90deg);
+  }
+}
+
+@keyframes flip-bottom {
+  from {
+    transform: rotateX(90deg);
+  }
+  to {
+    transform: rotateX(0deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tile.is-flipping .tile__flap {
+    visibility: hidden;
+    animation: none;
+  }
+}
+
+.countdown__caption {
+  color: var(--accent);
+  opacity: 0.75;
+  font-size: 3.5vmin;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
