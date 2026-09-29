@@ -15,4 +15,12 @@ describe("toWallClock", () => {
   it("uses midnight for date without time", () => {
     expect(toWallClock("2026-10-02")).toBe("2026-10-02T00:00");
   });
+
+  it("uses the given default time for date without time", () => {
+    expect(toWallClock("2026-10-02", "12:00")).toBe("2026-10-02T12:00");
+  });
+
+  it("ignores the default time when time is present", () => {
+    expect(toWallClock("2026-10-02T09:00:00.000+03:00", "12:00")).toBe("2026-10-02T09:00");
+  });
 });

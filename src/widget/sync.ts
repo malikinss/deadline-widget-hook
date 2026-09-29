@@ -1,11 +1,9 @@
 // ./src/widget/sync.ts
 
-import { DEADLINE_PROPERTY, WIDGET_URL_PROPERTY } from "../config";
-import { toWallClock } from "../lib/datetime";
 import { findEmbed } from "../notion/blocks";
 import type { NotionClient } from "../notion/client";
-import { getDateStart, getFormulaString } from "../notion/properties";
-import { isManagedEmbedUrl, toEmbedUrl, withDeadline } from "./widget";
+import { findDatabaseConfig, isCompleted, readDeadline } from "./rules";
+import { buildWidgetUrl, doneUrl, isManagedEmbedUrl, toEmbedUrl } from "./widget";
 
 export type SyncResult =
   | { status: "created" }
@@ -19,28 +17,38 @@ export async function syncWidgetEmbed(
 ): Promise<SyncResult> {
   const page = await notion.getPage(pageId);
 
-  const deadline = getDateStart(page, DEADLINE_PROPERTY);
-  if (!deadline) {
-    return { status: "skipped", reason: `empty "${DEADLINE_PROPERTY}"` };
+  const db = findDatabaseConfig(page);
+  if (!db) {
+    return { status: "skipped", reason: "database is not configured" };
   }
 
-  const template = getFormulaString(page, WIDGET_URL_PROPERTY);
-  if (!template) {
-    return { status: "skipped", reason: `empty "${WIDGET_URL_PROPERTY}"` };
+  const completed = isCompleted(page, db);
+
+  let target: string;
+  if (completed) {
+    target = doneUrl();
+  } else {
+    const deadline = readDeadline(page, db);
+    if (!deadline) {
+      return { status: "skipped", reason: `empty "${db.deadlineProperty}"` };
+    }
+    target = toEmbedUrl(buildWidgetUrl(deadline));
   }
 
-  const url = toEmbedUrl(withDeadline(template, toWallClock(deadline)));
   const embed = findEmbed(await notion.listChildren(pageId), isManagedEmbedUrl);
 
   if (!embed) {
-    await notion.appendEmbed(pageId, url);
+    if (completed) {
+      return { status: "skipped", reason: "completed without widget" };
+    }
+    await notion.appendEmbed(pageId, target);
     return { status: "created" };
   }
 
-  if (embed.embed.url === url) {
+  if (embed.embed.url === target) {
     return { status: "unchanged", blockId: embed.id };
   }
 
-  await notion.updateEmbedUrl(embed.id, url);
+  await notion.updateEmbedUrl(embed.id, target);
   return { status: "updated", blockId: embed.id };
 }

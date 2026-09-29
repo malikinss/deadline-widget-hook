@@ -1,12 +1,36 @@
 // ./src/widget/widget.ts
 
 import {
+  DONE_PATH,
   EMBED_PATH,
   EMBED_SRC_PARAM,
+  WIDGET_BASE_URL,
   WIDGET_DEADLINE_PARAM,
   WIDGET_HOST,
+  WIDGET_PARAMS,
   WORKER_ORIGIN,
 } from "../config";
+
+/**
+ * Returns the URL of the "Completed" badge page.
+ */
+export function doneUrl(): string {
+  return new URL(DONE_PATH, WORKER_ORIGIN).toString();
+}
+
+/**
+ * Builds the countdown widget URL from the template in config.
+ * @param wallClock - Deadline in `YYYY-MM-DDTHH:mm` format.
+ * @returns Direct widget URL.
+ */
+export function buildWidgetUrl(wallClock: string): string {
+  const url = new URL(WIDGET_BASE_URL);
+  for (const [name, value] of Object.entries(WIDGET_PARAMS)) {
+    url.searchParams.set(name, value);
+  }
+  url.searchParams.set(WIDGET_DEADLINE_PARAM, wallClock);
+  return url.toString();
+}
 
 export function isWidgetUrl(url: string): boolean {
   try {
@@ -15,12 +39,6 @@ export function isWidgetUrl(url: string): boolean {
   } catch {
     return false;
   }
-}
-
-export function withDeadline(widgetUrl: string, wallClock: string): string {
-  const url = new URL(widgetUrl);
-  url.searchParams.set(WIDGET_DEADLINE_PARAM, wallClock);
-  return url.toString();
 }
 
 /**
@@ -35,21 +53,35 @@ export function toEmbedUrl(widgetUrl: string): string {
 }
 
 /**
- * Checks whether a URL points to our embed wrapper page.
+ * Checks whether a URL points to a given page of this worker.
  */
-export function isEmbedWrapperUrl(url: string): boolean {
+function isWorkerPageUrl(url: string, path: string): boolean {
   try {
     const parsed = new URL(url);
-    return parsed.origin === WORKER_ORIGIN && parsed.pathname === EMBED_PATH;
+    return parsed.origin === WORKER_ORIGIN && parsed.pathname === path;
   } catch {
     return false;
   }
 }
 
 /**
+ * Checks whether a URL points to our embed wrapper page.
+ */
+export function isEmbedWrapperUrl(url: string): boolean {
+  return isWorkerPageUrl(url, EMBED_PATH);
+}
+
+/**
+ * Checks whether a URL points to our "Completed" badge page.
+ */
+export function isDonePageUrl(url: string): boolean {
+  return isWorkerPageUrl(url, DONE_PATH);
+}
+
+/**
  * Checks whether an embed is managed by the sync:
- * either a legacy direct widget URL or a wrapper URL.
+ * a legacy direct widget URL, a wrapper URL or the "Completed" badge.
  */
 export function isManagedEmbedUrl(url: string): boolean {
-  return isWidgetUrl(url) || isEmbedWrapperUrl(url);
+  return isWidgetUrl(url) || isEmbedWrapperUrl(url) || isDonePageUrl(url);
 }

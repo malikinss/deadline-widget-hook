@@ -1,3 +1,5 @@
+// ./src/notion/types.ts
+
 export interface NotionDate {
   start: string;
   end: string | null;
@@ -6,15 +8,18 @@ export interface NotionDate {
 
 export interface NotionProperty {
   type: string;
-  formula?: {
-    type: string;
-    string?: string | null;
-  };
   date?: NotionDate | null;
+  status?: { name: string } | null;
+}
+
+export interface NotionParent {
+  type: string;
+  database_id?: string;
 }
 
 export interface NotionPage {
   id: string;
+  parent: NotionParent;
   properties: Record<string, NotionProperty>;
 }
 
