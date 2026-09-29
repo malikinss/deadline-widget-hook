@@ -1,10 +1,16 @@
 // ./public/embed.js
 
 /**
- * Widget wrapper: reads the widget URL from the `src` query parameter
- * and loads it with a theme matching the system color scheme.
+ * Widget wrapper: reads the widget URL from the `src` query parameter,
+ * sets its theme from the system color scheme and its ink color
+ * from the time left until the deadline.
  * The URL is validated by the worker before this page is served.
  */
+
+import { msUntilNextChange, parseDeadline, pickInk } from "./urgency.js";
+
+// Longest delay setTimeout supports (about 24.8 days); longer values fire immediately.
+const MAX_TIMEOUT_MS = 2 ** 31 - 1;
 
 /**
  * Parses the widget URL from the page query string.
@@ -19,29 +25,57 @@ function readWidgetUrl() {
 }
 
 /**
- * Loads the widget with a theme that matches the current system color scheme.
- * @param {HTMLIFrameElement} frame - Iframe that displays the widget.
- * @param {URL} widgetUrl - Widget URL.
- * @param {MediaQueryList} darkQuery - Result of the `prefers-color-scheme: dark` query.
+ * Builds the widget URL for the current theme and time.
+ * @param {URL} baseUrl - Widget URL from the `src` parameter.
+ * @param {boolean} isDark - Whether the system color scheme is dark.
+ * @param {number} now - Current timestamp in milliseconds.
+ * @returns {string} Widget URL to load.
  */
-function applyTheme(frame, widgetUrl, darkQuery) {
-  widgetUrl.searchParams.set("theme", darkQuery.matches ? "dark" : "light");
-  const next = widgetUrl.toString();
-  if (frame.src !== next) frame.src = next;
+function buildWidgetUrl(baseUrl, isDark, now) {
+  const url = new URL(baseUrl);
+  url.searchParams.set("theme", isDark ? "dark" : "light");
+
+  const deadline = parseDeadline(url);
+  if (deadline !== null) {
+    const ink = pickInk(deadline - now);
+    if (ink) url.searchParams.set("ink", ink);
+  }
+
+  return url.toString();
 }
 
 function main() {
   const frame = document.getElementById("widget");
-  const widgetUrl = readWidgetUrl();
+  const baseUrl = readWidgetUrl();
 
-  if (!widgetUrl) {
+  if (!baseUrl) {
     document.body.textContent = "Invalid widget URL";
     return;
   }
 
   const darkQuery = matchMedia("(prefers-color-scheme: dark)");
-  applyTheme(frame, widgetUrl, darkQuery);
-  darkQuery.addEventListener("change", () => applyTheme(frame, widgetUrl, darkQuery));
+  const deadline = parseDeadline(baseUrl);
+  let timer = null;
+
+  const scheduleNext = (now) => {
+    clearTimeout(timer);
+    if (deadline === null) return;
+    const wait = msUntilNextChange(deadline - now);
+    if (wait !== null) timer = setTimeout(render, Math.min(wait, MAX_TIMEOUT_MS));
+  };
+
+  const render = () => {
+    const now = Date.now();
+    const next = buildWidgetUrl(baseUrl, darkQuery.matches, now);
+    if (frame.src !== next) frame.src = next;
+    scheduleNext(now);
+  };
+
+  render();
+  darkQuery.addEventListener("change", render);
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) render();
+  });
 }
 
 main();
