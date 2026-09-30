@@ -1,4 +1,4 @@
-// ./public/time.js
+// ./public/shared/time.js
 
 /**
  * Time helpers for the countdown widget.

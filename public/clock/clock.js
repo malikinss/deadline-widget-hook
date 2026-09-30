@@ -1,4 +1,4 @@
-// ./public/clock.js
+// ./public/clock/clock.js
 
 /**
  * Clock widget page: shows local time on flip tiles

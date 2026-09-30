@@ -1,4 +1,4 @@
-// ./public/fit.js
+// ./public/shared/fit.js
 
 /**
  * Sets the font size of a label so that its text is exactly as wide as a target element.

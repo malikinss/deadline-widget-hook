@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Calendar</title>
+  <link rel="stylesheet" href="/shared/card.css">
+  <link rel="stylesheet" href="/calendar/calendar.css">
+  <script type="module" src="/calendar/calendar.js"></script>
+</head>
+<body>
+  <main class="card calendar">
+    <header class="calendar__header">
+      <button class="calendar__nav" type="button" data-shift="-1" aria-label="Previous month">‹</button>
+      <button class="calendar__title" type="button" data-action="today" title="Back to today">
+        <span class="calendar__month"></span>
+        <span class="calendar__year"></span>
+      </button>
+      <button class="calendar__nav" type="button" data-shift="1" aria-label="Next month">›</button>
+    </header>
+
+    <div class="calendar__weekdays" aria-hidden="true">
+      <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+    </div>
+
+    <div class="calendar__days"></div>
+  </main>
+</body>
+</html>

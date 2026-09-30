@@ -1,4 +1,4 @@
-// ./public/tile.js
+// ./public/shared/tile.js
 
 /**
  * Flip tile: shows a value and animates its changes like a split-flap display.

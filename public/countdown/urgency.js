@@ -1,4 +1,4 @@
-// ./public/urgency.js
+// ./public/countdown/urgency.js
 
 /**
  * Urgency rules for the countdown widget: which ink color to use

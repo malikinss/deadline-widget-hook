@@ -1,4 +1,4 @@
-// ./public/countdown.js
+// ./public/countdown/countdown.js
 
 /**
  * Countdown widget page: reads the deadline from the `to` query parameter,

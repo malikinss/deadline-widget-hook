@@ -1,13 +1,12 @@
-// ./public/clock-format.js
+// ./public/clock/clock-format.js
 
 /**
  * Formatting helpers for the clock widget.
  */
 
 import { pad2 } from "../shared/time.js";
+import { MONTHS_SHORT, WEEKDAYS_SHORT } from "../shared/date-names.js";
 
-const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 /**
  * Splits a moment into two-digit hours, minutes and seconds in local time.
@@ -28,5 +27,5 @@ export function clockParts(date) {
  * @returns {string} For example `"Wed, Sep 30"`.
  */
 export function dateLabel(date) {
-  return `${WEEKDAYS[date.getDay()]}, ${MONTHS[date.getMonth()]} ${date.getDate()}`;
+  return `${WEEKDAYS_SHORT[date.getDay()]}, ${MONTHS_SHORT[date.getMonth()]} ${date.getDate()}`;
 }

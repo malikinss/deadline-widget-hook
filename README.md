@@ -56,13 +56,20 @@ The theme (light or dark) follows the viewer's system color scheme. It matches N
 
 ```
 public/
+  calendar.html         Calendar widget page (URL: /calendar)
   countdown.html        Countdown widget page (URL: /countdown?to=...)
   clock.html            Clock widget page (URL: /clock)
   done.html             "Completed!" badge (URL: /done)
   pending.html          "No deadline" badge (URL: /pending)
 
+  calendar/             Calendar only
+    calendar.css
+    calendar.js         Month view state, rendering and navigation
+    calendar-grid.js    Month grid math
+
   shared/               Used by more than one widget
     card.css            Card, theme, font, default accent color
+    date-names.js       English weekday and month names
     tile.css            Flip tile and its animation
     tile.js             FlipTile and createTiles
     fit.js              Fits a label to the width of another element
