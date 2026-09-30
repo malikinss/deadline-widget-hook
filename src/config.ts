@@ -7,29 +7,14 @@ export const NOTION_VERSION = "2022-06-28";
 // Webhook
 export const SECRET_HEADER = "x-secret";
 
-// Widget
-export const WIDGET_HOST = "mindfulwidgets.com";
-export const WIDGET_DEADLINE_PARAM = "to";
-
-export const WIDGET_BASE_URL = "https://mindfulwidgets.com/embed/notion/countdown/v1";
-export const WIDGET_PARAMS: Readonly<Record<string, string>> = {
-  color: "gray",
-  ink: "24a9e1",
-  font: "sans",
-  style: "flip",
-  label: "Deadline",
-};
 export const DEFAULT_DEADLINE_TIME = "12:00";
 
-// Embed wrapper page
-export const EMBED_PATH = "/embed";
-export const EMBED_SRC_PARAM = "src";
 export const WORKER_ORIGIN = "https://deadline-widget-hook.arme-malikinss.workers.dev";
 
 export const DONE_PATH = "/done";
 export const PENDING_PATH = "/pending";
-
 export const COUNTDOWN_PATH = "/countdown";
+
 export const COUNTDOWN_DEADLINE_PARAM = "to";
 
 // Databases the worker is allowed to modify.

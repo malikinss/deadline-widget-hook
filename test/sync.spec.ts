@@ -20,17 +20,6 @@ const PENDING = `${WORKER}/pending`;
 
 // Embeds that may already exist on a page.
 const OLD_COUNTDOWN = `${WORKER}/countdown?to=2026-09-01T12%3A00`;
-const LEGACY_DIRECT =
-  "https://mindfulwidgets.com/embed/notion/countdown/v1" +
-  "?color=gray&ink=24a9e1&font=sans&style=flip&label=Deadline&to=2026-09-01T12%3A00&theme=light";
-const LEGACY_WRAPPED =
-  `${WORKER}/embed?src=https%3A%2F%2Fmindfulwidgets.com%2Fembed%2Fnotion%2Fcountdown%2Fv1` +
-  "%3Fcolor%3Dgray%26ink%3D24a9e1%26font%3Dsans%26style%3Dflip%26label%3DDeadline" +
-  "%26to%3D2026-09-01T12%253A00";
-const OLD_WRAPPED =
-  `${WORKER}/embed?src=https%3A%2F%2Fmindfulwidgets.com%2Fembed%2Fnotion%2Fcountdown%2Fv1` +
-  "%3Fcolor%3Dgray%26ink%3D24a9e1%26font%3Dsans%26style%3Dflip%26label%3DDeadline" +
-  "%26to%3D2026-09-01T12%253A00";
 
 interface FakeOptions {
   databaseId?: string;
@@ -128,22 +117,6 @@ describe("syncWidgetEmbed", () => {
 
       expect(result).toEqual({ status: "updated", blockId: "b1" });
       expect(notion.updateEmbedUrl).toHaveBeenCalledWith("b1", EXPECTED);
-    });
-
-    it("convert a legacy wrapped embed", async () => {
-      const notion = fakeNotion({ blocks: [embedBlock(LEGACY_WRAPPED)] });
-      const result = await syncWidgetEmbed(notion, "p1");
-
-      expect(result).toEqual({ status: "updated", blockId: "b1" });
-      expect(notion.updateEmbedUrl).toHaveBeenCalledWith("b1", EXPECTED);
-      expect(notion.updateEmbedUrl).toHaveBeenCalledWith("b1", EXPECTED);
-    });
-
-    it("convert a legacy direct embed", async () => {
-      const notion = fakeNotion({ blocks: [embedBlock(LEGACY_DIRECT)] });
-      const result = await syncWidgetEmbed(notion, "p1");
-
-      expect(result).toEqual({ status: "updated", blockId: "b1" });
     });
 
     it("restore the countdown after being reopened", async () => {

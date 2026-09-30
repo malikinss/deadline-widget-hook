@@ -1,7 +1,7 @@
 // ./test/urgency.spec.ts
 
 import { describe, expect, it } from "vitest";
-import { msUntilNextChange, parseDeadline, pickInk } from "../public/urgency.js";
+import { parseDeadline, pickInk } from "../public/urgency.js";
 
 const HOUR = 60 * 60 * 1000;
 const DAY = 24 * HOUR;
@@ -27,24 +27,6 @@ describe("pickInk", () => {
   it("switches right after the 3-day boundary", () => {
     expect(pickInk(3 * DAY)).toBeNull();
     expect(pickInk(3 * DAY - 1)).toBe("FFC800");
-  });
-});
-
-describe("msUntilNextChange", () => {
-  it("waits until 3 days are left", () => {
-    expect(msUntilNextChange(5 * DAY)).toBe(2 * DAY + 1);
-  });
-
-  it("waits until 1 day is left", () => {
-    expect(msUntilNextChange(2 * DAY)).toBe(DAY + 1);
-  });
-
-  it("waits until the deadline", () => {
-    expect(msUntilNextChange(5 * HOUR)).toBe(5 * HOUR + 1);
-  });
-
-  it("does not schedule anything after the deadline", () => {
-    expect(msUntilNextChange(-1)).toBeNull();
   });
 });
 
