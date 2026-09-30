@@ -332,3 +332,4 @@ Start with `npx wrangler tail` and repeat the change in Notion.
 - Notion automations run with a delay of a few seconds.
 - Only top-level blocks are searched for the widget embed.
 - The widget theme follows the system, not a manually chosen Notion theme.
+- Notion draws its own menu button over the top right corner of an embed on hover, so widgets must not place controls there.
