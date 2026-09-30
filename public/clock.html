@@ -4,36 +4,27 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <title>Deadline</title>
+  <title>Clock</title>
   <link rel="stylesheet" href="/shared/card.css">
   <link rel="stylesheet" href="/shared/tile.css">
-  <link rel="stylesheet" href="/countdown/countdown.css">
-  <script type="module" src="/countdown/countdown.js"></script>
+  <link rel="stylesheet" href="/clock/clock.css">
+  <script type="module" src="/clock/clock.js"></script>
 </head>
 <body>
-  <main class="card countdown">
-        <div class="countdown__label"><span class="countdown__label-text">Deadline</span></div>
-
-    <div class="countdown__tiles">
-      <div class="countdown__unit">
-        <div data-tile="days"></div>
-        <div class="countdown__caption">Days</div>
-      </div>
-      <div class="countdown__unit">
-        <div data-tile="hours"></div>
-        <div class="countdown__caption">Hrs</div>
-      </div>
-      <div class="countdown__unit">
-        <div data-tile="minutes"></div>
-        <div class="countdown__caption">Mins</div>
-      </div>
-      <div class="countdown__unit">
-        <div data-tile="seconds"></div>
-        <div class="countdown__caption">Secs</div>
-      </div>
+  <main class="card clock">
+    <div class="clock__unit">
+      <div data-tile="hours"></div>
+      <span class="clock__date"></span>
+    </div>
+    <div class="clock__unit">
+      <div data-tile="minutes"></div>
+    </div>
+    <div class="clock__unit">
+      <div data-tile="seconds"></div>
     </div>
   </main>
-    <template id="tile-template">
+
+  <template id="tile-template">
     <div class="tile">
       <div class="tile__half tile__half--top" data-part="top">
         <span class="tile__value"></span>

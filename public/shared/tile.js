@@ -63,3 +63,20 @@ export class FlipTile {
     for (const part of Object.values(this.parts)) part.textContent = value;
   }
 }
+
+/**
+ * Replaces every `[data-tile]` placeholder with a flip tile cloned from a template.
+ * @param {HTMLTemplateElement} template - Template with the tile markup.
+ * @returns {Record<string, FlipTile>} Tiles by their `data-tile` name.
+ */
+export function createTiles(template) {
+  const tiles = {};
+
+  for (const slot of document.querySelectorAll("[data-tile]")) {
+    const root = template.content.firstElementChild.cloneNode(true);
+    slot.replaceWith(root);
+    tiles[slot.dataset.tile] = new FlipTile(root);
+  }
+
+  return tiles;
+}

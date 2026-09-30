@@ -1,0 +1,34 @@
+.clock {
+  flex-direction: row;
+  gap: 3vmin;
+  padding: 4vmin;
+  container-type: size;
+}
+
+.clock__unit {
+  position: relative;
+  width: min(calc((100cqw - 6vmin) / 3), 100cqh);
+  aspect-ratio: 1 / 1;
+  container-type: size;
+}
+
+.clock .tile {
+  width: 100%;
+  height: 100%;
+  font-size: min(55cqh, 40cqw);
+}
+
+.clock__date {
+  position: absolute;
+  z-index: 4;
+  left: 6cqw;
+  bottom: 5cqh;
+  color: var(--accent);
+  opacity: 0.85;
+  font-size: min(11cqh, 12cqw);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+}

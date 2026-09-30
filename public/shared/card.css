@@ -1,4 +1,5 @@
 :root {
+  --accent: #24a9e1;
   --card-bg: #f1f1ef;
   --card-shadow: rgba(0, 0, 0, 0.08);
 }
@@ -14,6 +15,7 @@ html,
 body {
   margin: 0;
   height: 100%;
+  overflow: hidden;
   background: transparent;
 }
 

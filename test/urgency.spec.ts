@@ -1,7 +1,7 @@
 // ./test/urgency.spec.ts
 
 import { describe, expect, it } from "vitest";
-import { parseDeadline, pickInk } from "../public/urgency.js";
+import { parseDeadline, pickInk } from "../public/countdown/urgency.js";
 
 const HOUR = 60 * 60 * 1000;
 const DAY = 24 * HOUR;

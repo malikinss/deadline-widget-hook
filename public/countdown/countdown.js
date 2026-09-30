@@ -6,32 +6,15 @@
  * and colors the widget by urgency.
  */
 
-import { fitToWidth } from "./fit.js";
-import { countdownState, pad2 } from "./time.js";
-import { FlipTile } from "./tile.js";
+import { fitToWidth } from "../shared/fit.js";
+import { countdownState, pad2 } from "../shared/time.js";
+import { createTiles } from "../shared/tile.js";
 import { parseDeadline, pickInk } from "./urgency.js";
 
 const LABEL_ACTIVE = "Deadline";
 const LABEL_OVERDUE = "Overdue";
 // The label may not be taller than this share of a tile's height.
 const LABEL_MAX_TILE_RATIO = 0.6;
-
-/**
- * Replaces every `[data-tile]` placeholder with a flip tile from the template.
- * @returns {Record<string, FlipTile>} Tiles by their `data-tile` name.
- */
-function createTiles() {
-  const template = document.getElementById("tile-template");
-  const tiles = {};
-
-  for (const slot of document.querySelectorAll("[data-tile]")) {
-    const root = template.content.firstElementChild.cloneNode(true);
-    slot.replaceWith(root);
-    tiles[slot.dataset.tile] = new FlipTile(root);
-  }
-
-  return tiles;
-}
 
 /**
  * Sets the urgency color, or restores the default color from CSS.
@@ -56,7 +39,7 @@ function main() {
   const label = document.querySelector(".countdown__label");
   const text = document.querySelector(".countdown__label-text");
   const tilesRow = document.querySelector(".countdown__tiles");
-  const tiles = createTiles();
+  const tiles = createTiles(document.getElementById("tile-template"));
 
   const firstTile = tilesRow.querySelector(".tile");
   const fitLabel = () =>

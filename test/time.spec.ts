@@ -1,7 +1,7 @@
 // ./test/time.spec.ts
 
 import { describe, expect, it } from "vitest";
-import { countdownState, pad2, splitDuration } from "../public/time.js";
+import { countdownState, pad2, splitDuration } from "../public/shared/time.js";
 
 const SECOND = 1000;
 const MINUTE = 60 * SECOND;

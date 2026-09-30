@@ -31,11 +31,11 @@ The worker only **updates** an existing widget embed. It never creates or delete
 | Active, no deadline | `/pending` badge |
 | Active, deadline set | `/countdown` |
 
-Countdown colors (see `public/urgency.js`):
+Countdown colors (see `public/countdown/urgency.js`):
 
 | Time left | Color |
 |---|---|
-| more than 3 days | `#24a9e1` (default, from `countdown.css`) |
+| more than 3 days | `#24a9e1` (default, from `shared/card.css`) |
 | less than 3 days | `#FFC800` |
 | less than 1 day | `#FB2A00` |
 | deadline reached | `#FF0000`, label changes to OVERDUE and tiles count up |
@@ -55,17 +55,33 @@ The theme (light or dark) follows the viewer's system color scheme. It matches N
 ## Project structure
 
 ```
-public/                 Static pages, served by Cloudflare directly
-  countdown.html/.css   Flip countdown widget
-  countdown.js          Wires time, tiles, colors and label fitting
-  tile.js               FlipTile: split-flap animation of one tile
-  fit.js                Fits the label text to the width of the tiles
-  time.js               Duration math (days, hours, minutes, seconds)
-  urgency.js            Urgency colors and deadline parsing
-  card.css              Shared card for all widget pages
-  badge.css             Shared badge layout (icon and text)
-  done.html/.css        "Completed!" badge
-  pending.html/.css     "No deadline" badge
+public/
+  countdown.html        Countdown widget page (URL: /countdown?to=...)
+  clock.html            Clock widget page (URL: /clock)
+  done.html             "Completed!" badge (URL: /done)
+  pending.html          "No deadline" badge (URL: /pending)
+
+  shared/               Used by more than one widget
+    card.css            Card, theme, font, default accent color
+    tile.css            Flip tile and its animation
+    tile.js             FlipTile and createTiles
+    fit.js              Fits a label to the width of another element
+    time.js             Duration math and pad2
+
+  countdown/            Countdown only
+    countdown.css
+    countdown.js        Wires time, tiles, colors and label fitting
+    urgency.js          Urgency colors and deadline parsing
+
+  clock/                Clock only
+    clock.css
+    clock.js            Wires local time and date to the tiles
+    clock-format.js     Clock time and date formatting
+
+  badges/               Completed and No deadline badges
+    badge.css           Shared badge layout (icon and text)
+    done.css            Green accent
+    pending.css         Amber accent
 
 src/
   index.ts              Entry point: secret check, payload parsing, error mapping
@@ -81,6 +97,8 @@ src/
 
 test/                   Vitest unit tests
 ```
+
+Page HTML files stay in the root of `public/`: their paths are the widget URLs stored in Notion embeds, and moving them breaks the embeds. Styles and scripts are grouped by widget; files used by more than one widget go to `shared/`.
 
 ---
 
@@ -188,10 +206,11 @@ When one of these changes, update every place in the list.
 | Completed statuses | `DATABASES` in `src/config.ts`, Time Left formulas |
 | Property names `Deadline`, `Status` | Notion, `DATABASES` in `src/config.ts`, automations, formulas |
 | Default time 12:00 | `DEFAULT_DEADLINE_TIME` in `src/config.ts`, Time Left formulas |
-| Urgency thresholds (3 days, 1 day) | `public/urgency.js`, Time Left formulas |
+| Urgency thresholds (3 days, 1 day) | `public/countdown/urgency.js`, Time Left formulas |
 | Worker URL | `WORKER_ORIGIN` in `src/config.ts`, automations, buttons, templates |
 | `HOOK_SECRET` | Cloudflare secret, `x-secret` header in every automation and button |
-| `to` parameter name | `COUNTDOWN_DEADLINE_PARAM` in `src/config.ts`, `parseDeadline` in `public/urgency.js` |
+| `to` parameter name | `COUNTDOWN_DEADLINE_PARAM` in `src/config.ts`, `parseDeadline` in `public/countdown/urgency.js` |
+| Tile markup (`#tile-template`) | `public/countdown.html`, `public/clock.html` |
 
 ---
 
