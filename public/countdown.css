@@ -3,7 +3,7 @@
 }
 
 .countdown {
-  gap: 4vmin;
+  gap: 3vmin;
 }
 
 .countdown__label {
@@ -34,11 +34,11 @@
 
 .tile {
   position: relative;
-  width: min(19vw, 28vmin);
-  height: min(16vw, 24vmin);
+  width: min(19vw, 34vmin);
+  height: min(16vw, 28vmin);
+  font-size: min(11vw, 20vmin);
   perspective: 60vmin;
   color: var(--accent);
-  font-size: min(11vw, 17vmin);
   font-weight: 800;
 }
 
@@ -146,8 +146,8 @@
 
 .countdown__caption {
   color: var(--accent);
-  opacity: 0.75;
-  font-size: 3.5vmin;
+  opacity: 0.85;
+  font-size: max(8px, 5vmin);
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;

@@ -7,8 +7,9 @@
  * @param {HTMLElement} label - Element that receives the font size.
  * @param {HTMLElement} text - Inline element with the text inside `label`.
  * @param {HTMLElement} target - Element whose width the text should match.
+ * @param {number} [maxPx=Infinity] - Largest allowed font size in pixels.
  */
-export function fitToWidth(label, text, target) {
+export function fitToWidth(label, text, target, maxPx = Infinity) {
   const REFERENCE_PX = 100;
   label.style.fontSize = `${REFERENCE_PX}px`;
 
@@ -17,6 +18,7 @@ export function fitToWidth(label, text, target) {
   const targetWidth = target.getBoundingClientRect().width;
 
   if (textWidth > 0) {
-    label.style.fontSize = `${(REFERENCE_PX * targetWidth) / textWidth}px`;
+    const fitted = (REFERENCE_PX * targetWidth) / textWidth;
+    label.style.fontSize = `${Math.min(fitted, maxPx)}px`;
   }
 }

@@ -13,6 +13,8 @@ import { parseDeadline, pickInk } from "./urgency.js";
 
 const LABEL_ACTIVE = "Deadline";
 const LABEL_OVERDUE = "Overdue";
+// The label may not be taller than this share of a tile's height.
+const LABEL_MAX_TILE_RATIO = 0.6;
 
 /**
  * Replaces every `[data-tile]` placeholder with a flip tile from the template.
@@ -56,7 +58,9 @@ function main() {
   const tilesRow = document.querySelector(".countdown__tiles");
   const tiles = createTiles();
 
-  const fitLabel = () => fitToWidth(label, text, tilesRow);
+  const firstTile = tilesRow.querySelector(".tile");
+  const fitLabel = () =>
+    fitToWidth(label, text, tilesRow, firstTile.getBoundingClientRect().height * LABEL_MAX_TILE_RATIO);
 
   const render = () => {
     const now = Date.now();
