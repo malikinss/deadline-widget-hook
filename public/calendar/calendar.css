@@ -1,3 +1,19 @@
+:root {
+  --holiday: #d93025;
+  --erev: #d9730d;
+  --memorial: #787774;
+  --festive: #9065b0;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --holiday: #ff6b6b;
+    --erev: #ffa344;
+    --memorial: #9b9a97;
+    --festive: #c49cf0;
+  }
+}
+
 .calendar {
   align-items: stretch;
   justify-content: flex-start;
@@ -76,13 +92,33 @@
   width: min(11cqh, 10cqw);
   aspect-ratio: 1 / 1;
   border-radius: 50%;
-  color: var(--accent);
+  color: var(--day-color, var(--accent));
   font-size: min(6.5cqh, 4.8cqw);
   font-weight: 600;
 }
 
+.calendar__day.is-holiday {
+  --day-color: var(--holiday);
+}
+
+.calendar__day.is-erev {
+  --day-color: var(--erev);
+}
+
+.calendar__day.is-memorial {
+  --day-color: var(--memorial);
+}
+
+.calendar__day.is-festive {
+  --day-color: var(--festive);
+}
+
+.calendar__day[title] {
+  cursor: help;
+}
+
 .calendar__day.is-today {
-  background: var(--accent);
+  background: var(--day-color, var(--accent));
   color: var(--card-bg);
   font-weight: 800;
 }

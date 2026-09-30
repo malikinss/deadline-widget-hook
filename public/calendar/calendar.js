@@ -7,6 +7,7 @@
 
 import { MONTHS_LONG } from "../shared/date-names.js";
 import { monthGrid, shiftMonth } from "./calendar-grid.js";
+import { holidaysOn, mainKind } from "./holidays.js";
 
 /**
  * Returns the month that contains the given date.
@@ -34,10 +35,18 @@ function main() {
     const cells = monthGrid(view.year, view.month).map((day) => {
       const cell = document.createElement("span");
       cell.className = "calendar__day";
-      if (day !== null) {
-        cell.textContent = String(day);
-        if (showsToday && day === today.getDate()) cell.classList.add("is-today");
+      if (day === null) return cell;
+
+      cell.textContent = String(day);
+      if (showsToday && day === today.getDate()) cell.classList.add("is-today");
+
+      const holidays = holidaysOn(new Date(view.year, view.month, day, 12));
+      const kind = mainKind(holidays);
+      if (kind) {
+        cell.classList.add(`is-${kind}`);
+        cell.title = holidays.map((holiday) => holiday.name).join(" · ");
       }
+
       return cell;
     });
 

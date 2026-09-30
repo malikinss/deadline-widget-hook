@@ -52,6 +52,30 @@ The theme (light or dark) follows the viewer's system color scheme. It matches N
 
 ---
 
+## Calendar holidays
+
+The calendar marks Jewish and Israeli holidays following the **Israeli** schedule
+(one day of Yom Tov, except the two days of Rosh Hashana). Dates are computed in the
+browser from the Hebrew calendar (`Intl`), no external service is used.
+
+| Kind | Color | Examples |
+|---|---|---|
+| `holiday` | red | Rosh Hashana, Yom Kippur, Sukkot, Pesach, Shavuot, Yom HaAtzmaut |
+| `erev` | orange | Erev Yom Kippur, Erev Pesach, Hoshana Raba |
+| `memorial` | gray | Yom HaShoah, Yom HaZikaron, Tisha B'Av, fast days |
+| `festive` | purple | Chol HaMoed, Hanukkah, Purim, Tu BiShvat, Lag BaOmer |
+
+When a day has several events, the color follows the most important kind
+(`KIND_PRIORITY` in `holidays.js`); the tooltip lists all of them.
+
+Postponement rules are implemented for Tzom Gedaliah, Ta'anit Esther, 17 Tammuz,
+Tisha B'Av, Yom HaShoah, Yom HaZikaron and Yom HaAtzmaut. Each rule has tests on
+real dates in `test/holidays.spec.ts`. When a test fails, check the date against a
+reliable Hebrew calendar first: the test can be wrong too.
+
+To add a holiday on a fixed Hebrew date, add a line to `FIXED` in `holidays.js`
+and a test for it.
+
 ## Project structure
 
 ```
@@ -66,6 +90,8 @@ public/
     calendar.css
     calendar.js         Month view state, rendering and navigation
     calendar-grid.js    Month grid math
+    hebrew-date.js      Gregorian to Hebrew date conversion (via Intl)
+    holidays.js         Jewish and Israeli holiday rules
 
   shared/               Used by more than one widget
     card.css            Card, theme, font, default accent color
